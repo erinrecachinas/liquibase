@@ -96,6 +96,8 @@ public class Main {
     protected Boolean strict = Boolean.TRUE;
     protected String defaultsFile = "liquibase.properties";
     protected String diffTypes;
+    protected String excludeObjects;
+    protected String includeObjects;
     protected String changeSetAuthor;
     protected String changeSetContext;
     protected String dataOutputDirectory;
@@ -587,9 +589,11 @@ public class Main {
                 && (!commandParams.isEmpty())) {
                 for (String cmdParm : commandParams) {
                     if (!cmdParm.startsWith("--" + OPTIONS.INCLUDE_SCHEMA)
-                        && !cmdParm.startsWith("--" + OPTIONS.INCLUDE_CATALOG)
-                        && !cmdParm.startsWith("--" + OPTIONS.INCLUDE_TABLESPACE)
-                        && !cmdParm.startsWith("--" + OPTIONS.SCHEMAS)) {
+                            && !cmdParm.startsWith("--" + OPTIONS.INCLUDE_CATALOG)
+                            && !cmdParm.startsWith("--" + OPTIONS.INCLUDE_TABLESPACE)
+                            && !cmdParm.startsWith("--" + OPTIONS.SCHEMAS)
+                            && !cmdParm.startsWith("--" + OPTIONS.INCLUDE_OBJECTS)
+                            && !cmdParm.startsWith("--" + OPTIONS.EXCLUDE_OBJECTS)) {
                         messages.add(String.format(coreBundle.getString("unexpected.command.parameter"), cmdParm));
                     }
                 }
@@ -958,8 +962,8 @@ public class Main {
         database.setLiquibaseTablespaceName(this.databaseChangeLogTablespaceName);
         try {
 
-            String excludeObjects = StringUtil.trimToNull(getCommandParam(OPTIONS.EXCLUDE_OBJECTS, null));
-            String includeObjects = StringUtil.trimToNull(getCommandParam(OPTIONS.INCLUDE_OBJECTS, null));
+            excludeObjects = StringUtil.trimToNull(getCommandParam(OPTIONS.EXCLUDE_OBJECTS, null));
+            includeObjects = StringUtil.trimToNull(getCommandParam(OPTIONS.INCLUDE_OBJECTS, null));
 
             if ((excludeObjects != null) && (includeObjects != null)) {
                 throw new UnexpectedLiquibaseException(
